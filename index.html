@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Free AI APIs — Directorio verificado</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a0b;
+    --bg-soft:#0f0f11;
+    --card:#121214;
+    --card-hover:#161619;
+    --border:rgba(255,255,255,0.07);
+    --border-strong:rgba(255,255,255,0.14);
+    --text:#ececee;
+    --text-dim:#8b8b92;
+    --text-faint:#5a5a61;
+    --gold:#c9a961;
+    --gold-soft:rgba(201,169,97,0.12);
+    --gold-line:rgba(201,169,97,0.3);
+    --green:#5fb98a;
+    --amber:#d9a441;
+    --red:#d9695f;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:
+      radial-gradient(1200px 600px at 50% -10%, rgba(201,169,97,0.07), transparent 60%),
+      radial-gradient(800px 400px at 100% 100%, rgba(201,169,97,0.04), transparent 60%),
+      var(--bg);
+    color:var(--text);
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    font-size:15px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:64px 28px 96px}
+
+  header{margin-bottom:56px}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--gold);font-weight:600;margin-bottom:20px;
+  }
+  .eyebrow::before{
+    content:"";width:24px;height:1px;background:var(--gold);display:inline-block;
+  }
+  h1{
+    font-family:'Instrument Serif',Georgia,serif;
+    font-weight:400;font-size:clamp(38px,5vw,58px);
+    line-height:1.05;letter-spacing:-.02em;margin-bottom:16px;
+  }
+  h1 em{font-style:italic;color:var(--gold)}
+  .lede{color:var(--text-dim);max-width:640px;font-size:16px}
+  .meta-row{
+    display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:28px;
+    font-size:12.5px;color:var(--text-faint);
+  }
+  .meta-row span{display:inline-flex;align-items:center;gap:6px}
+  .dot{width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
+
+  .section-label{
+    display:flex;align-items:center;gap:14px;
+    margin:0 0 24px;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--text-faint);font-weight:600;
+  }
+  .section-label::after{content:"";flex:1;height:1px;background:var(--border)}
+
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+  @media (max-width:860px){.grid{grid-template-columns:1fr}}
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:28px 28px 26px;
+    position:relative;
+    transition:border-color .25s ease, background .25s ease, transform .25s ease;
+    overflow:hidden;
+  }
+  .card::before{
+    content:"";position:absolute;inset:0;border-radius:var(--radius);
+    background:linear-gradient(180deg, rgba(201,169,97,0.05), transparent 40%);
+    opacity:0;transition:opacity .25s ease;pointer-events:none;
+  }
+  .card:hover{
+    border-color:var(--border-strong);
+    background:var(--card-hover);
+    transform:translateY(-2px);
+  }
+  .card:hover::before{opacity:1}
+
+  .card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:6px}
+  .card-title{
+    font-family:'Instrument Serif',Georgia,serif;
+    font-weight:400;font-size:28px;line-height:1.1;letter-spacing:-.01em;
+  }
+  .card-title span{color:var(--gold)}
+  .status{
+    font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+    padding:5px 10px;border-radius:999px;font-weight:600;white-space:nowrap;
+    border:1px solid var(--gold-line);color:var(--gold);background:var(--gold-soft);
+  }
+  .status.green{border-color:rgba(95,185,138,.35);color:var(--green);background:rgba(95,185,138,.08)}
+  .status.warn{border-color:rgba(217,164,65,.4);color:var(--amber);background:rgba(217,164,65,.08)}
+
+  .url{
+    font-size:12.5px;color:var(--text-faint);margin-bottom:16px;
+    font-family:ui-monospace,'SF Mono',Menlo,monospace;
+  }
+  .desc{color:var(--text-dim);font-size:14px;margin-bottom:20px}
+
+  .tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+  .tag{
+    font-size:11px;padding:5px 10px;border-radius:6px;
+    background:rgba(255,255,255,0.04);border:1px solid var(--border);
+    color:var(--text-dim);font-weight:500;
+  }
+  .tag.gold{color:var(--gold);border-color:var(--gold-line);background:var(--gold-soft)}
+  .tag.warn{color:var(--amber);border-color:rgba(217,164,65,.3);background:rgba(217,164,65,.06)}
+
+  .block{margin-top:20px}
+  .block h3{
+    font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--text-faint);font-weight:600;margin-bottom:12px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .block h3::after{content:"";flex:1;height:1px;background:var(--border)}
+
+  .limits{
+    width:100%;border-collapse:collapse;font-size:13.5px;
+  }
+  .limits tr{border-bottom:1px solid var(--border)}
+  .limits tr:last-child{border-bottom:none}
+  .limits td{padding:9px 0;vertical-align:top}
+  .limits td:first-child{color:var(--text-dim);width:45%}
+  .limits td:last-child{
+    color:var(--text);font-weight:500;text-align:right;
+    font-variant-numeric:tabular-nums;
+  }
+  .limits td:last-child em{
+    font-style:normal;color:var(--gold);font-weight:600;
+  }
+
+  .callout{
+    font-size:13px;padding:12px 14px;border-radius:10px;
+    border-left:2px solid var(--amber);background:rgba(217,164,65,0.06);
+    color:#d8d4c8;line-height:1.55;
+  }
+  .callout strong{color:var(--amber);font-weight:600}
+
+  .models{display:flex;flex-direction:column;gap:10px}
+  .model-row{
+    display:flex;justify-content:space-between;align-items:baseline;
+    gap:12px;padding:6px 0;border-bottom:1px solid var(--border);
+    font-size:12.5px;
+  }
+  .model-row:last-child{border-bottom:none}
+  .model-name{
+    font-family:ui-monospace,'SF Mono',Menlo,monospace;
+    color:var(--text);font-weight:500;
+  }
+  .model-spec{
+    color:var(--text-faint);font-size:11.5px;text-align:right;
+    line-height:1.4;
+  }
+  .model-spec em{
+    font-style:normal;color:var(--gold);font-weight:600;
+  }
+
+  footer{
+    margin-top:64px;padding-top:28px;border-top:1px solid var(--border);
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;
+    font-size:12px;color:var(--text-faint);
+  }
+  footer a{color:var(--text-dim);text-decoration:none;border-bottom:1px dotted var(--text-faint)}
+  footer a:hover{color:var(--gold);border-color:var(--gold)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Directorio verificado · Edición octubre 2026</div>
+    <h1>APIs de IA con <em>plan gratuito</em><br>y límites reales.</h1>
+    <p class="lede">Fichas verificadas manualmente. Sin anuncios, sin afiliados. Cada entrada documenta RPM, RPD, requisitos de registro y advertencias que la documentación oficial no suele contar.</p>
+    <div class="meta-row">
+      <span><span class="dot"></span>5 APIs publicadas</span>
+      <span>Verificado el 28 de octubre de 2026</span>
+      <span>Actualizado mensualmente</span>
+    </div>
+  </header>
+
+  <div class="section-label">Fichas</div>
+
+  <div class="grid">
+
+    <!-- ========== NVIDIA NIM ========== -->
+    <article class="card">
+      <div class="card-head">
+        <div class="card-title">NVIDIA <span>NIM</span></div>
+        <div class="status">Verificado</div>
+      </div>
+      <div class="url">build.nvidia.com</div>
+      <p class="desc">Catálogo de modelos de frontera abiertos alojados en la infraestructura de NVIDIA. Compatible con el formato de OpenAI, por lo que migrar código es trivial.</p>
+
+      <div class="tags">
+        <span class="tag gold">Modelos de frontera</span>
+        <span class="tag">Requiere SMS</span>
+        <span class="tag">Sin tarjeta</span>
+        <span class="tag">OpenAI-compatible</span>
+      </div>
+
+      <div class="block">
+        <h3>Límites del plan gratuito</h3>
+        <table class="limits">
+          <tr><td>RPM</td><td><em>40</em> req/min</td></tr>
+          <tr><td>RPD / TPM / TPD</td><td>Sin tope diario publicado</td></tr>
+          <tr><td>Autenticación</td><td>Bearer · <code>nvapi-…</code></td></tr>
+          <tr><td>Registro</td><td>Email + SMS</td></tr>
+          <tr><td>Scope requerido</td><td>Public API Endpoints</td></tr>
+        </table>
+      </div>
+
+      <div class="block">
+        <h3>Modelos destacados (Free Endpoint)</h3>
+        <div class="models">
+          <div class="model-row">
+            <span class="model-name">z-ai/glm-5.3-flash</span>
+            <span class="model-spec"><em>320B</em> total · 18B activos<br>1.3M contexto · multimodal</span>
+          </div>
+          <div class="model-row">
+            <span class="model-name">stepfun-ai/step-5-preview</span>
+            <span class="model-spec"><em>~600B</em> total · 27B activos<br>1M contexto · multimodal</span>
+          </div>
+          <div class="model-row">
+            <span class="model-name">deepseek-ai/deepseek-v4.1-flash</span>
+            <span class="model-spec"><em>552B</em> total · 8B activos (prefill)<br>1M contexto · multimodal</span>
+          </div>
+          <div class="model-row">
+            <span class="model-name">minimaxai/minimax-m3.1-flash</span>
+            <span class="model-spec"><em>428B</em> total · 23B activos<br>262K contexto · texto/imagen/video</span>
+          </div>
+          <div class="model-row">
+            <span class="model-name">nvidia/nemotron-3-ultra-550b-a55b</span>
+            <span class="model-spec"><em>550B</em> total · 55B activos<br>262K contexto · solo texto</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3>Advertencia</h3>
+        <div class="callout">
+          <strong>Latencia variable.</strong> Modelos como Step 5 Preview o Nemotron Ultra, por su tamaño, pueden superar los 2s de TTFT. La verificación por SMS es un cuello de botella real: puede fallar.
+        </div>
+      </div>
+    </article>
+
+    <!-- ========== GROQ ========== -->
+    <article class="card">
+      <div class="card-head">
+        <div class="card-title">Gr<span>oq</span></div>
+        <div class="status green">Verificado</div>
+      </div>
+      <div class="url">console.groq.com</div>
+      <p class="desc">Inferencia ultrarrápida sobre hardware LPU propio. Compatible con el formato de OpenAI. La opción más veloz del directorio para modelos abiertos.</p>
+
+      <div class="tags">
+        <span class="tag gold">Velocidad extrema</span>
+        <span class="tag">Multimodal</span>
+        <span class="tag">Sin tarjeta</span>
+        <span class="tag">OpenAI-compatible</span>
+      </div>
+
+      <div class="block">
+        <h3>Límites del plan gratuito</h3>
+        <table class="limits">
+          <tr><td>RPM</td><td><em>30</em> req/min</td></tr>
+          <tr><td>RPD (Qwen 3.8 27B)</td><td><em>1,000</em> req/día</td></tr>
+          <tr><td>TPM</td><td>8,000 tokens/min</td></tr>
+          <tr><td>TPD</td><td>200,000 tokens/día</td></tr>
+          <tr><td>Autenticación</td><td>Bearer · <code>gsk_…</code></td></tr>
+          <tr><td>Registro</td><td>Email / Google / GitHub</td></tr>
+        </table>
+      </div>
+
+      <div class="block">
+        <h3>Modelos destacados</h3>
+        <div class="models">
+          <div class="model-row">
+            <span class="model-name">qwen/qwen3.8-27b</span>
+            <span class="model-spec"><em>27B</em> · multimodal<br>131K contexto</span>
+          </div>
+          <div class="model-row">
+            <span class="model-name">openai/gpt-oss-120b</span>
+            <span class="model-spec"><em>120B</em> · texto<br>RPD alto</span>
+          </div>
+          <div class="model-row">
+            <span class="model-name">llama-3.1-8b-instant</span>
+            <span class="model-spec"><em>8B</em> · texto<br>14,400 RPD</span>
+          </div>
+          <div class="model-row">
+            <span class="model-name">whisper-large-v3</span>
+            <span class="model-spec">Audio · transcripción<br>20 RPM · 2K RPD</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3>Advertencia</h3>
+        <div class="callout">
+          <strong>Límite por organización.</strong> Todas las API keys de una misma cuenta comparten cupo. Qwen 3.8 27B está en Preview: disponibilidad y límites pueden cambiar sin aviso.
+        </div>
+      </div>
+    </article>
+
+    <!-- ========== GOOGLE GEMINI ========== -->
+    <article class="card">
+      <div class="card-head">
+        <div class="card-title">Google <span>Gemini</span></div>
+        <div class="status">Verificado</div>
+      </div>
+      <div class="url">aistudio.google.com</div>
+      <p class="desc">Modelos multimodales de Google con ventana de contexto de 1M de tokens. Nivel gratuito recurrente, sin tarjeta de crédito, ideal para prototipos que necesitan mucho contexto.</p>
+
+      <div class="tags">
+        <span class="tag gold">Contexto 1M</span>
+        <span class="tag">Multimodal</span>
+        <span class="tag">Sin tarjeta</span>
+        <span class="tag">SMS intermitente</span>
+      </div>
+
+      <div class="block">
+        <h3>Límites del plan gratuito (por modelo)</h3>
+        <table class="limits">
+          <tr><td>Gemini 2.5 Pro</td><td><em>5</em> RPM · <em>100</em> RPD</td></tr>
+          <tr><td>Gemini 2.5 Flash</td><td><em>10</em> RPM · <em>250</em> RPD</td></tr>
+          <tr><td>Gemini 2.5 Flash-Lite</td><td><em>15</em> RPM · <em>1,000</em> RPD</td></tr>
+          <tr><td>TPM (compartido)</td><td>250,000 tokens/min</td></tr>
+          <tr><td>Autenticación</td><td><code>x-goog-api-key</code></td></tr>
+          <tr><td>Registro</td><td>Cuenta Google</td></tr>
+        </table>
+        <p style="font-size:11.5px; color:var(--text-faint); margin-top:10px; line-height:1.45;">Los modelos más nuevos (3.8 Flash, 3.6 Flash, 3.1 Flash-Lite) tienen acceso gratuito, pero sus límites exactos de RPM/RPD no se publican y pueden ser más restrictivos.</p>
+      </div>
+
+      <div class="block">
+        <h3>Modelos gratuitos</h3>
+        <div class="models">
+          <div class="model-row">
+            <span class="model-name">gemini-3.8-flash</span>
+            <span class="model-spec"><em>Flash</em> · 1M contexto<br>Multimodal</span>
+          </div>
+          <div class="model-row">
+            <span class="model-name">gemini-3.6-flash</span>
+            <span class="model-spec"><em>Flash</em> · 1M contexto<br>Multimodal</span>
+          </div>
+          <div class="model-row">
+            <span class="model-name">gemini-3.1-flash-lite</span>
+            <span class="model-spec"><em>Lite</em> · 1M contexto<br>15 RPM · 500 RPD</span>
+          </div>
+          <div class="model-row">
+            <span class="model-name">gemma-4-31b-it</span>
+            <span class="model-spec"><em>Abierto</em> · Google<br>Nivel gratuito</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3>Advertencia</h3>
+        <div class="callout">
+          <strong>Límites por proyecto, no por clave.</strong> Varias API keys en el mismo proyecto comparten el mismo cupo. Google puede usar tus prompts del nivel gratuito para mejorar sus productos. Los modelos "Pro" tienen un cupo testimonial (100 RPD) o son de pago.
+        </div>
+      </div>
+    </article>
+
+    <!-- ========== MISTRAL AI ========== -->
+    <article class="card">
+      <div class="card-head">
+        <div class="card-title">Mistral <span>AI</span></div>
+        <div class="status">Verificado</div>
+      </div>
+      <div class="url">console.mistral.ai</div>
+      <p class="desc">Plan "Experiment" con acceso a modelos abiertos y propietarios. Cuota mensual de tokens muy generosa y compatibilidad con OpenAI. La velocidad depende mucho del modelo elegido.</p>
+
+      <div class="tags">
+        <span class="tag gold">1B tokens/mes</span>
+        <span class="tag">Requiere SMS</span>
+        <span class="tag">Opt-in data training</span>
+        <span class="tag">OpenAI-compatible</span>
+      </div>
+
+      <div class="block">
+        <h3>Límites del plan gratuito ("Experiment")</h3>
+        <table class="limits">
+          <tr><td>RPS</td><td><em>1</em> req/segundo (por modelo)</td></tr>
+          <tr><td>TPM</td><td>500,000 tokens/min (por modelo)</td></tr>
+          <tr><td>Cuota mensual</td><td><em>1,000,000,000</em> tokens/mes (por modelo)</td></tr>
+          <tr><td>Autenticación</td><td>Bearer · <code>Authorization</code></td></tr>
+          <tr><td>Registro</td><td>Email + SMS obligatorio</td></tr>
+          <tr><td>Condición</td><td>Opt-in a entrenamiento de datos</td></tr>
+        </table>
+        <p style="font-size:11.5px; color:var(--text-faint); margin-top:10px; line-height:1.45;">El límite de 1 RPS es el cuello de botella real: espaciar las peticiones al menos 1 segundo es obligatorio para evitar errores <code>429</code>.</p>
+      </div>
+
+      <div class="block">
+        <h3>Modelos gratuitos</h3>
+        <div class="models">
+          <div class="model-row">
+            <span class="model-name">mistral-small-latest</span>
+            <span class="model-spec"><em>Small 4</em> · 256K contexto<br>Muy rápido · uso general</span>
+          </div>
+          <div class="model-row">
+            <span class="model-name">mistral-medium-3-5</span>
+            <span class="model-spec"><em>Medium 3.5</em> · 256K contexto<br>128B · fuerte en coding</span>
+          </div>
+          <div class="model-row">
+            <span class="model-name">mistral-large-latest</span>
+            <span class="model-spec"><em>Large 3</em> · 256K contexto<br>Flagship · más lento</span>
+          </div>
+          <div class="model-row">
+            <span class="model-name">codestral-latest</span>
+            <span class="model-spec"><em>Codestral</em> · 128K contexto<br>Especializado en código</span>
+          </div>
+          <div class="model-row">
+            <span class="model-name">ministral-8b-latest</span>
+            <span class="model-spec"><em>Ministral 8B</em> · 256K contexto<br>Ligero y rápido</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3>Advertencia</h3>
+        <div class="callout">
+          <strong>La velocidad no es uniforme.</strong> Mistral Small 4 es muy rápido (~152 t/s, ~0.95s TTFT), pero Mistral Large 4 Preview puede superar los 28s de TTFT. El free tier también exige aceptar el entrenamiento con tus datos y verificar teléfono por SMS.
+        </div>
+      </div>
+    </article>
+
+    <!-- ========== OPENROUTER (CIERRE) ========== -->
+    <article class="card">
+      <div class="card-head">
+        <div class="card-title">Open<span>Router</span></div>
+        <div class="status warn">No tan recomendada</div>
+      </div>
+      <div class="url">openrouter.ai</div>
+      <p class="desc">Agregador: una sola API key y un solo formato para decenas de modelos de distintos proveedores. Los modelos con sufijo <code>:free</code> son los que entran en el plan gratuito.</p>
+
+      <div class="tags">
+        <span class="tag warn">Cierre del directorio</span>
+        <span class="tag gold">Agregador</span>
+        <span class="tag">Modelos :free</span>
+        <span class="tag">Sin tarjeta</span>
+        <span class="tag">OpenAI-compatible</span>
+      </div>
+
+      <div class="block">
+        <h3>Límites del plan gratuito</h3>
+        <table class="limits">
+          <tr><td>RPM</td><td><em>20</em> req/min</td></tr>
+          <tr><td>RPD (sin créditos)</td><td><em>50</em> req/día</td></tr>
+          <tr><td>RPD (con ≥10 USD)</td><td><em>1,000</em> req/día</td></tr>
+          <tr><td>Autenticación</td><td>Bearer · <code>sk-or-v1-…</code></td></tr>
+          <tr><td>Registro</td><td>Email / Google / GitHub</td></tr>
+        </table>
+      </div>
+
+      <div class="block">
+        <h3>Modelos gratuitos</h3>
+        <div class="models">
+          <div class="model-row">
+            <span class="model-name">deepseek/*:free</span>
+            <span class="model-spec"><em>Rotativo</em> · texto<br>Disponibilidad variable</span>
+          </div>
+          <div class="model-row">
+            <span class="model-name">meta-llama/*:free</span>
+            <span class="model-spec"><em>Rotativo</em> · texto<br>Cola de espera posible</span>
+          </div>
+          <div class="model-row">
+            <span class="model-name">qwen/*:free</span>
+            <span class="model-spec"><em>Rotativo</em> · texto<br>Proveedores distintos</span>
+          </div>
+          <div class="model-row">
+            <span class="model-name">mistralai/*:free</span>
+            <span class="model-spec"><em>Rotativo</em> · texto<br>Entra y sale del catálogo</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3>Advertencia</h3>
+        <div class="callout">
+          <strong>El RPD de 50 es el más bajo del directorio.</strong> Los modelos <code>:free</code> tienen disponibilidad variable, colas y proveedores que rotan; algunos registran prompts. Ideal para <em>comparar modelos</em>, no para producción.
+        </div>
+      </div>
+    </article>
+
+  </div>
+
+  <footer>
+    <span>No afiliado a las marcas mencionadas. Los límites pueden cambiar.</span>
+    <span>Última verificación · <a href="#">28 oct 2026</a></span>
+  </footer>
+
+</div>
+</body>
+</html>
